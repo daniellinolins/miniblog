@@ -2,6 +2,8 @@ import styles from "./Register.module.css"
 
 import { useState, useEffect } from 'react'
 
+import { useAuthentication } from '../../hooks/useAuthentication'
+
 const Register = () => {
     const [displayName, setDisplayName] = useState("")
     const [email, setEmail] = useState("")
@@ -9,9 +11,11 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [error, setError] = useState("")
 
-    const handleSubmit = (e) => {
+    const { createUser, error: authError, loading } = useAuthentication();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         setError("")
 
         const user = {
@@ -25,9 +29,18 @@ const Register = () => {
             return
         }
 
+        const res = await createUser(user)
+
         console.log(user)
 
     }
+
+    useEffect(() => {
+        if (authError) {
+            setError(authError)
+        }
+
+    }, [authError]);
 
     return (
         <div className={styles.register}>
@@ -53,7 +66,7 @@ const Register = () => {
                         required
                         placeholder="E-mail do Usuário"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}                        
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                 </label>
                 <label>
@@ -64,7 +77,7 @@ const Register = () => {
                         required
                         placeholder="Insira sua senha"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}                        
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                 </label>
                 <label>
@@ -75,10 +88,11 @@ const Register = () => {
                         required
                         placeholder="Confirme sua senha"
                         value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}                        
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                 </label>
-                <button className="btn">Cadastrar</button>
+                {!loading && <button className="btn">Cadastrar</button>}
+                {loading && <button className="btn" disabled>Aguarde...</button>}
                 {error && <p className="error">{error}</p>}
             </form>
         </div>

@@ -52,8 +52,8 @@ export const useAuthentication = () => {
 
         } catch (error) {
 
-            console.log(error.message)
-            console.log(typeof error.message)
+            //console.log(error.message)
+            //console.log(typeof error.message)
 
             let systemErrorMensage;
 
@@ -75,6 +75,33 @@ export const useAuthentication = () => {
         signOut(auth)
     }
 
+    //login - sign out
+    const login  = async (data) => {
+
+        checkIfIsCancelled()
+        setLoading(true)
+        setError(false)
+
+        try {
+            await signInWithEmailAndPassword(auth, data.email, data.password)
+            setLoading(false)
+        } catch (error){
+            let systemErrorMensage;
+
+            if (error.message.includes("INVALID_LOGIN_CREDENTIALS")) {
+                systemErrorMensage = "Invalid credentials";
+            } else if (error.message.includes("wrong-password")) {
+                systemErrorMensage = "Wrong password.";
+            }else{
+                systemErrorMensage = "An error occurred, please try later.";
+            }
+            setLoading(false)
+            setError(systemErrorMensage)            
+        }
+
+    }
+
+
 
     useEffect(() => {
         return () => setCancelled(true);
@@ -86,6 +113,7 @@ export const useAuthentication = () => {
         error,
         loading,
         logout,
+        login,
     }
 
 }

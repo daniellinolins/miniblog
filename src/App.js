@@ -42,8 +42,8 @@ function App() {
 
   }
 
-  console.log('usuario:')
-  console.log(user.displayName)
+  //console.log('usuario:')
+  //console.log(user.displayName)
   return (
     <div className="App">
       <AuthProvider value={{user}}>
